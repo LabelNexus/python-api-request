@@ -1,3 +1,4 @@
+from lumavate_exceptions import ApiException
 import requests
 import json
 
@@ -68,4 +69,4 @@ class ApiRequest:
       self.raise_exception(res)
 
   def raise_exception(self, res):
-    raise Exception('Error making request ' + res.url + ':' + res.request.method + ' - ' + str(res.status_code))
+    raise ApiException(res.status_code, 'Error making request ' + res.url + ':' + res.request.method + ' - ' + str(res.status_code))
