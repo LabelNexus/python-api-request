@@ -18,6 +18,9 @@ class ApiRequest:
   def delete(self, path, headers=None, raw=False):
     return self.make_request('delete', path, headers=headers, raw=raw)
 
+  def sign_url(self, method, path, payload, headers):
+    return path
+
   def make_request(self, method, path, headers=None, payload=None, files=None, raw=False):
     response_content = None
     results = {}
@@ -38,7 +41,8 @@ class ApiRequest:
       payload = json.dumps(payload)
 
     with requests.Session() as s:
-      res = getattr(s, method.lower())(path, headers=headers, data=payload, stream=True, timeout=None, files=files)
+      url = self.sign_url(method, path, payload, headers)
+      res = getattr(s, method.lower())(url, headers=headers, data=payload, stream=True, timeout=None, files=files)
       res.encoding = 'utf-8' if not(res.encoding) else res.encoding
 
       for chunk in res.iter_content(chunk_size=512, decode_unicode=not raw):
