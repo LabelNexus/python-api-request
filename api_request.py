@@ -45,7 +45,7 @@ class ApiRequest:
       res = getattr(s, method.lower())(url, headers=headers, data=payload, stream=True, timeout=None, files=files)
       res.encoding = 'utf-8' if not(res.encoding) else res.encoding
 
-      for chunk in res.iter_content(chunk_size=512, decode_unicode=not raw):
+      for chunk in res.iter_content(chunk_size=524288, decode_unicode=not raw):
         if chunk:
           if response_content is None:
             response_content = chunk
