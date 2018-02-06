@@ -40,6 +40,8 @@ class ApiRequest:
     if payload is not None:
       payload = json.dumps(payload)
 
+    headers['Connection'] = 'close'
+
     with requests.Session() as s:
       url = self.sign_url(method, path, payload, headers)
       res = getattr(s, method.lower())(url, headers=headers, data=payload, stream=True, timeout=None, files=files)
