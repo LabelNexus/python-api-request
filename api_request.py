@@ -23,11 +23,11 @@ class ApiRequest:
     """Return the appropriate base url for the api call"""
     raise Exception('Not implemented')
 
-  def get(self, path, headers=None, raw=False):
+  def get(self, path, headers=None, raw=False, timeout=None):
     """Perform a 'GET' REST request with the given parameters"""
-    return self.make_request('get', path, headers=headers, raw=raw)
+    return self.make_request('get', path, headers=headers, raw=raw, timeout=timeout)
 
-  def post(self, path, payload, headers=None, files=None, raw=False):
+  def post(self, path, payload, headers=None, files=None, raw=False, timeout=None):
     """Perform a 'POST' REST request with the given parameters"""
     return self.make_request(
         'post',
@@ -35,20 +35,22 @@ class ApiRequest:
         payload=payload,
         headers=headers,
         files=files,
-        raw=raw)
+        raw=raw,
+        timeout=timeout)
 
-  def put(self, path, payload, headers=None, raw=False):
+  def put(self, path, payload, headers=None, raw=False, timeout=None):
     """Perform a 'PUT' REST request with the given parameters"""
     return self.make_request(
         'put',
         path,
         payload=payload,
         headers=headers,
-        raw=raw)
+        raw=raw,
+        timeout=timeout)
 
-  def delete(self, path, headers=None, raw=False):
+  def delete(self, path, headers=None, raw=False, timeout=None):
     """Perform a 'DELETE' REST request with the given parameters"""
-    return self.make_request('delete', path, headers=headers, raw=raw)
+    return self.make_request('delete', path, headers=headers, raw=raw, timeout=timeout)
 
   def sign_url(self, method, path, payload, headers):
     """With the given request paraemters, calculate a request signature"""
@@ -61,13 +63,18 @@ class ApiRequest:
       headers=None,
       payload=None,
       files=None,
-      raw=False):
+      raw=False,
+      timeout=None):
     """Make a request with the given method and parameters"""
     response_content = None
     results = {}
 
     if headers is None:
       headers = {}
+
+    if timeout is None:
+      # If timeout is not set, requests library will hang indefinitely
+      timeout = 30
 
     if 'Authorization' not in headers:
       headers['Authorization'] = self.get_auth_token()
@@ -91,7 +98,7 @@ class ApiRequest:
           headers=headers,
           data=payload,
           stream=True,
-          timeout=None,
+          timeout=timeout,
           files=files)
 
       res.encoding = 'utf-8' if not(res.encoding) else res.encoding
