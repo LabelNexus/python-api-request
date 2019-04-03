@@ -93,13 +93,16 @@ class ApiRequest:
     with requests.Session() as session:
       url = self.sign_url(method, path, payload, headers)
       func = getattr(session, method.lower())
-      res = func(
-          url,
-          headers=headers,
-          data=payload,
-          stream=True,
-          timeout=timeout,
-          files=files)
+      try:
+        res = func(
+            url,
+            headers=headers,
+            data=payload,
+            stream=True,
+            timeout=timeout,
+            files=files)
+      except requests.exceptions.ReadTimeout:
+        raise ApiException(408, 'Request Timeout')
 
       res.encoding = 'utf-8' if not(res.encoding) else res.encoding
 
