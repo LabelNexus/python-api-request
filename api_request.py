@@ -1,4 +1,9 @@
 """Common Request Module"""
+  def raise_exception(self, res, response_content=None):
+    """Raise an appropriate exception, based on the response state and data"""
+    raise ApiException(
+        res.status_code,
+        'Error making request ' + res.url + ':' + res.request.method + ' - ' + str(res.status_code))
 # pylint: disable=too-many-arguments,unused-argument,no-self-use
 import json
 import requests
@@ -101,8 +106,10 @@ class ApiRequest:
             stream=True,
             timeout=timeout,
             files=files)
-      except requests.exceptions.ReadTimeout:
+      except requests.exceptions.ReadTimeout  as e:
         raise ApiException(408, 'Request Timeout')
+      except Exception as e:
+        raise
 
       res.encoding = 'utf-8' if not(res.encoding) else res.encoding
 
@@ -113,15 +120,15 @@ class ApiRequest:
           else:
             response_content += chunk
 
-      if res.status_code == 200:
-        if raw:
-          results = response_content
-        else:
-          results = json.loads(response_content)
+    return self.handle_response(res, results, raw=raw, response_content=response_content)
 
-    return self.handle_response(res, results, raw=raw)
+  def handle_response(self, res, data=None, raw=False, response_content=None):
+    if res.status_code == 200:
+      if raw:
+        results = response_content
+      else:
+        results = json.loads(response_content)
 
-  def handle_response(self, res, data=None, raw=False):
     """Given the request outcome, properly respond to the data"""
     response_data = data
 
@@ -131,9 +138,9 @@ class ApiRequest:
 
       return response_data
 
-    return self.raise_exception(res)
+    return self.raise_exception(res, response_content)
 
-  def raise_exception(self, res):
+  def raise_exception(self, res, response_content=None):
     """Raise an appropriate exception, based on the response state and data"""
     raise ApiException(
         res.status_code,
