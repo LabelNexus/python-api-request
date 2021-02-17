@@ -1,3 +1,4 @@
+"""Common Request Module"""
 # pylint: disable=too-many-arguments,unused-argument,no-self-use
 import json
 import requests
@@ -103,6 +104,7 @@ class ApiRequest:
       except requests.exceptions.ReadTimeout  as e:
         raise ApiException(408, 'Request Timeout')
       except Exception as e:
+        print(e.__dict__)
         raise
 
       res.encoding = 'utf-8' if not(res.encoding) else res.encoding
@@ -114,15 +116,15 @@ class ApiRequest:
           else:
             response_content += chunk
 
-    return self.handle_response(res, results, raw=raw, response_content=response_content)
+      if res.status_code == 200:
+        if raw:
+          results = response_content
+        else:
+          results = json.loads(response_content)
+
+    return self.handle_response(res, data=results, raw=raw, response_content=response_content)
 
   def handle_response(self, res, data=None, raw=False, response_content=None):
-    if res.status_code == 200:
-      if raw:
-        results = response_content
-      else:
-        results = json.loads(response_content)
-
     """Given the request outcome, properly respond to the data"""
     response_data = data
 
