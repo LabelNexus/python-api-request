@@ -1,9 +1,3 @@
-"""Common Request Module"""
-  def raise_exception(self, res, response_content=None):
-    """Raise an appropriate exception, based on the response state and data"""
-    raise ApiException(
-        res.status_code,
-        'Error making request ' + res.url + ':' + res.request.method + ' - ' + str(res.status_code))
 # pylint: disable=too-many-arguments,unused-argument,no-self-use
 import json
 import requests
