@@ -101,8 +101,11 @@ class ApiRequest:
             stream=True,
             timeout=timeout,
             files=files)
-      except requests.exceptions.ReadTimeout:
+      except requests.exceptions.ReadTimeout  as e:
         raise ApiException(408, 'Request Timeout')
+      except Exception as e:
+        print(e.__dict__)
+        raise
 
       res.encoding = 'utf-8' if not(res.encoding) else res.encoding
 
@@ -119,9 +122,9 @@ class ApiRequest:
         else:
           results = json.loads(response_content)
 
-    return self.handle_response(res, results, raw=raw)
+    return self.handle_response(res, data=results, raw=raw, response_content=response_content)
 
-  def handle_response(self, res, data=None, raw=False):
+  def handle_response(self, res, data=None, raw=False, response_content=None):
     """Given the request outcome, properly respond to the data"""
     response_data = data
 
@@ -131,9 +134,9 @@ class ApiRequest:
 
       return response_data
 
-    return self.raise_exception(res)
+    return self.raise_exception(res, response_content)
 
-  def raise_exception(self, res):
+  def raise_exception(self, res, response_content=None):
     """Raise an appropriate exception, based on the response state and data"""
     raise ApiException(
         res.status_code,
