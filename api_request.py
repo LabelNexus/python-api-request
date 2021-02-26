@@ -27,6 +27,16 @@ class ApiRequest:
     """Perform a 'GET' REST request with the given parameters"""
     return self.make_request('get', path, headers=headers, raw=raw, timeout=timeout)
 
+  def patch(self, path, payload, headers=None, raw=False, timeout=None):
+    """Perform a 'PUT' REST request with the given parameters"""
+    return self.make_request(
+        'patch',
+        path,
+        payload=payload,
+        headers=headers,
+        raw=raw,
+        timeout=timeout)
+
   def post(self, path, payload, headers=None, files=None, raw=False, timeout=None):
     """Perform a 'POST' REST request with the given parameters"""
     return self.make_request(
