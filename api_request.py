@@ -3,6 +3,7 @@
 import json
 import requests
 from lumavate_exceptions import ApiException
+from urllib.parse import quote, urlparse
 
 class ApiRequest:
   """
@@ -23,11 +24,11 @@ class ApiRequest:
     """Return the appropriate base url for the api call"""
     raise Exception('Not implemented')
 
-  def get(self, path, headers=None, raw=False, timeout=None):
+  def get(self, path, headers=None, raw=False, timeout=None, encode_qs=False):
     """Perform a 'GET' REST request with the given parameters"""
-    return self.make_request('get', path, headers=headers, raw=raw, timeout=timeout)
+    return self.make_request('get', path, headers=headers, raw=raw, timeout=timeout, encode_qs=encode_qs)
 
-  def patch(self, path, payload, headers=None, raw=False, timeout=None):
+  def patch(self, path, payload, headers=None, raw=False, timeout=None, encode_qs=False):
     """Perform a 'PUT' REST request with the given parameters"""
     return self.make_request(
         'patch',
@@ -35,9 +36,10 @@ class ApiRequest:
         payload=payload,
         headers=headers,
         raw=raw,
-        timeout=timeout)
+        timeout=timeout,
+        encode_qs=encode_qs)
 
-  def post(self, path, payload, headers=None, files=None, raw=False, timeout=None):
+  def post(self, path, payload, headers=None, files=None, raw=False, timeout=None, encode_qs=False):
     """Perform a 'POST' REST request with the given parameters"""
     return self.make_request(
         'post',
@@ -46,9 +48,10 @@ class ApiRequest:
         headers=headers,
         files=files,
         raw=raw,
-        timeout=timeout)
+        timeout=timeout,
+        encode_qs=encode_qs)
 
-  def put(self, path, payload, headers=None, raw=False, timeout=None):
+  def put(self, path, payload, headers=None, raw=False, timeout=None, encode_qs=False):
     """Perform a 'PUT' REST request with the given parameters"""
     return self.make_request(
         'put',
@@ -56,11 +59,12 @@ class ApiRequest:
         payload=payload,
         headers=headers,
         raw=raw,
-        timeout=timeout)
+        timeout=timeout,
+        encode_qs=encode_qs)
 
-  def delete(self, path, headers=None, raw=False, timeout=None):
+  def delete(self, path, headers=None, raw=False, timeout=None, encode_qs=False):
     """Perform a 'DELETE' REST request with the given parameters"""
-    return self.make_request('delete', path, headers=headers, raw=raw, timeout=timeout)
+    return self.make_request('delete', path, headers=headers, raw=raw, timeout=timeout, encode_qs=encode_qs)
 
   def sign_url(self, method, path, payload, headers):
     """With the given request paraemters, calculate a request signature"""
@@ -74,7 +78,8 @@ class ApiRequest:
       payload=None,
       files=None,
       raw=False,
-      timeout=None):
+      timeout=None,
+      encode_qs=False):
     """Make a request with the given method and parameters"""
     response_content = None
     results = {}
