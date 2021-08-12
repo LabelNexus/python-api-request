@@ -106,6 +106,20 @@ class ApiRequest:
     headers['Connection'] = 'close'
 
     with requests.Session() as session:
+      if encode_qs:
+        parsed_url = urlparse(path)
+        path = f'{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}'
+        if parsed_url.query != '':
+            path += '?'
+            args = parsed_url.query.split('&')
+            last_item_idx = len(args) -1
+            for idx, arg in enumerate(args):
+                key, value = arg.split('=')
+                if idx ==  last_item_idx:
+                    path += f"{key}={quote(value)}"
+                else:
+                    path += f"{key}={quote(value)}&"
+
       url = self.sign_url(method, path, payload, headers)
       func = getattr(session, method.lower())
       try:
