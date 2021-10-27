@@ -79,7 +79,8 @@ class ApiRequest:
       files=None,
       raw=False,
       timeout=None,
-      encode_qs=False):
+      encode_qs=False,
+      ignore_content_type=False):
     """Make a request with the given method and parameters"""
     response_content = None
     results = {}
@@ -94,7 +95,7 @@ class ApiRequest:
     if 'Authorization' not in headers:
       headers['Authorization'] = self.get_auth_token()
 
-    if 'Content-Type' not in headers:
+    if 'Content-Type' not in headers and not ignore_content_type:
       headers['Content-Type'] = 'application/json'
 
     if path.startswith('/'):
