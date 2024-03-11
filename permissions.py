@@ -10,6 +10,8 @@ class Permissions(Enum):
   TextFullAccess = 'text:full_access'
   VideoFullAccess = 'video:full_access'
   FormsFullAccess = 'forms:full_access'
+  ProductsFullAccess = 'products:full_access'
+  LocationsFullAccess = 'locations:full_access'
 
   @classmethod
   def get_version(cls):
