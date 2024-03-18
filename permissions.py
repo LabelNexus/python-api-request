@@ -12,6 +12,8 @@ class Permissions(Enum):
   FormsFullAccess = 'forms:full_access'
   ProductsFullAccess = 'products:full_access'
   LocationsFullAccess = 'locations:full_access'
+  ExperiencesEdit = 'experiences:edit'
+  ExperiencesPublish = 'experiences:publish'
 
   @classmethod
   def get_version(cls):
