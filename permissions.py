@@ -14,6 +14,10 @@ class Permissions(Enum):
   LocationsFullAccess = 'locations:full_access'
   ExperiencesEdit = 'experiences:edit'
   ExperiencesPublish = 'experiences:publish'
+  LanguagesFullAccess = 'languages:full_access'
+  AuthenticationFullAccess = 'authentication:full_access'
+  MessagingAdminFullAccess = 'messaging_admin:full_access'
+
 
   @classmethod
   def get_version(cls):
