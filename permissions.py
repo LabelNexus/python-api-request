@@ -17,6 +17,7 @@ class Permissions(Enum):
   LanguagesFullAccess = 'languages:full_access'
   AuthenticationFullAccess = 'authentication:full_access'
   MessagingAdminFullAccess = 'messaging_admin:full_access'
+  AudiencesFullAccess = 'audiences:full_access'
 
 
   @classmethod
