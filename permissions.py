@@ -20,6 +20,7 @@ class Permissions(Enum):
   AudiencesFullAccess = 'audiences:full_access'
   ActivationsFullAccess = 'activations:full_access'
   MessagingFullAccess = 'messaging:full_access'
+  TableBuilderFullAccess = 'tablebuilder:full_access'
 
 
   @classmethod
